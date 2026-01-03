@@ -1,6 +1,6 @@
 import streamlit as st
 from ultralytics import YOLO
-from PIL import Image
+from PIL import Image, ImageOps
 import os
 
 # --- Page Configuration ---
@@ -118,6 +118,13 @@ if model:
     if image_source:
         # Display the input image
         image = Image.open(image_source)
+        
+        # FIX: Handle mobile image orientation (EXIF data)
+        try:
+            image = ImageOps.exif_transpose(image)
+        except Exception:
+            pass # Keep original if transposition fails
+
         st.image(image, caption='İşlenen Görüntü', use_column_width=True)
         
         with st.spinner('Analiz ediliyor...'):
