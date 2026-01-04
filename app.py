@@ -125,12 +125,21 @@ if model:
         except Exception:
             pass # Keep original if transposition fails
 
-        st.image(image, caption='İşlenen Görüntü', use_column_width=True)
+        # st.image(image, caption='İşlenen Görüntü', use_column_width=True)
         
         with st.spinner('Analiz ediliyor...'):
             try:
                 # Run inference
                 results = model.predict(image, conf=0.45)
+                
+                # Plot results on image
+                # results[0].plot() returns BGR numpy array
+                res_plotted = results[0].plot()
+                # Convert BGR to RGB for Streamlit
+                res_plotted = res_plotted[:, :, ::-1]
+                
+                # Display the annotated image
+                st.image(res_plotted, caption='Tespit Edilen Vidalar', use_container_width=True)
                 
                 # Check results
                 found_detection = False
